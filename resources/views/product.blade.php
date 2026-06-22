@@ -1,26 +1,30 @@
-@extends('layouts.app')
+﻿@extends('layouts.app')
 
-@section('title', $product->name . ' - SneakerStore')
+@section('title', $product->name . ' - Moltro')
 
 @section('content')
 
     <div class="text-sm text-gray-400 mb-6">
-        <a href="/" class="hover:text-orange-500">Home</a> /
-        <a href="/busca?cat={{ $product->category }}" class="hover:text-orange-500">{{ $product->category }}</a> /
+        <a href="/" class="hover:text-violet-500">Home</a> /
+        <a href="/busca?cat={{ $product->category }}" class="hover:text-violet-500">{{ $product->category }}</a> /
         <span class="text-gray-700">{{ $product->name }}</span>
     </div>
 
     <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
 
         <!-- Imagem -->
-        <div class="bg-gray-50 rounded-2xl h-96 flex items-center justify-center text-gray-300 text-sm border border-gray-100">
-            {{-- TODO: <img src="{{ $product->image }}" class="h-72 object-contain"> --}}
-            {{ $product->image }}
+        <div class="bg-gray-50 rounded-2xl h-96 overflow-hidden border border-gray-100">
+            @if ($product->image)
+                <img src="{{ $product->image }}" alt="{{ $product->name }}"
+                     class="w-full h-full object-cover">
+            @else
+                <div class="w-full h-full flex items-center justify-center text-gray-300 text-sm">Sem imagem</div>
+            @endif
         </div>
 
         <!-- Detalhes -->
         <div class="flex flex-col justify-center">
-            <span class="text-orange-500 text-xs font-semibold uppercase tracking-widest mb-2">{{ $product->category }}</span>
+            <span class="text-violet-500 text-xs font-semibold uppercase tracking-widest mb-2">{{ $product->category }}</span>
             <h1 class="text-3xl font-extrabold text-gray-900 mb-2">{{ $product->name }}</h1>
 
             <p class="text-3xl font-bold text-gray-900 mb-6">
@@ -30,10 +34,9 @@
             <p class="text-gray-600 mb-6 leading-relaxed">{{ $product->description }}</p>
 
             <ul class="grid grid-cols-2 gap-2 text-sm text-gray-600 mb-8">
-                <li class="bg-gray-50 rounded-lg px-4 py-2"><strong>Cor:</strong> {{ $product->color }}</li>
+                <li class="bg-gray-50 rounded-lg px-4 py-2"><strong>Material:</strong> {{ $product->color }}</li>
                 <li class="bg-gray-50 rounded-lg px-4 py-2"><strong>Tamanho:</strong> {{ $product->size }}</li>
                 <li class="bg-gray-50 rounded-lg px-4 py-2"><strong>Peso:</strong> {{ $product->weight }} kg</li>
-                <li class="bg-gray-50 rounded-lg px-4 py-2"><strong>Estoque:</strong> {{ $product->stock }} un.</li>
             </ul>
 
             <div class="flex items-center gap-3 mb-6">
@@ -52,12 +55,12 @@
                         data-name="{{ $product->name }}"
                         data-price="{{ $product->price }}"
                         data-image="{{ $product->image }}"
-                        class="flex-1 bg-orange-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-orange-600 transition">
+                        class="w-full bg-violet-500 text-white px-6 py-3 rounded-full font-semibold hover:bg-violet-600 transition">
                     Adicionar ao carrinho
                 </button>
 
                 <button id="fav-btn" data-id="{{ $product->id }}"
-                        class="p-3 border border-gray-300 rounded-full hover:border-orange-500 hover:text-orange-500 transition">
+                        class="p-3 border border-gray-300 rounded-full hover:border-violet-500 hover:text-violet-500 transition">
                     <svg id="fav-icon" xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 016.364 0L12 7.636l1.318-1.318a4.5 4.5 0 116.364 6.364L12 21l-7.682-7.682a4.5 4.5 0 010-6.364z"/>
                     </svg>
@@ -65,6 +68,15 @@
             </div>
 
             <p id="add-msg" class="text-green-600 text-sm mt-4 hidden">✓ Produto adicionado ao carrinho!</p>
+
+            <button id="buy-now"
+                    data-id="{{ $product->id }}"
+                    data-name="{{ $product->name }}"
+                    data-price="{{ $product->price }}"
+                    data-image="{{ $product->image }}"
+                    class="w-full mt-3 border-2 border-gray-900 text-gray-900 font-semibold py-3 rounded-full text-center hover:bg-gray-900 hover:text-white transition block">
+                Finalizar compra
+            </button>
         </div>
     </div>
 
@@ -117,6 +129,20 @@
         });
 
         refreshFavState();
+
+        document.getElementById('buy-now').addEventListener('click', function () {
+            const id = parseInt(this.dataset.id);
+            const qty = parseInt(document.getElementById('qty').value) || 1;
+            let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+            const existing = cart.find(item => item.productId === id);
+            if (existing) {
+                existing.qty += qty;
+            } else {
+                cart.push({ productId: id, qty: qty });
+            }
+            localStorage.setItem('cart', JSON.stringify(cart));
+            window.location.href = '/checkout';
+        });
     </script>
 
 @endsection

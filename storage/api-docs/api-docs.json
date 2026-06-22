@@ -1,0 +1,556 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "LuxJoias API",
+        "description": "API REST do e-commerce LuxJoias — correntes, cordões, relógios, pulseiras e pingentes.",
+        "contact": {
+            "email": "admin@luxjoias.com"
+        },
+        "version": "1.0.0"
+    },
+    "paths": {
+        "/api/health": {
+            "get": {
+                "tags": [
+                    "Status"
+                ],
+                "summary": "Verifica se a API está no ar",
+                "operationId": "5eb88ebf150861747e5ef19b68d3f027",
+                "responses": {
+                    "200": {
+                        "description": "API funcionando",
+                        "content": {
+                            "application/json": {
+                                "schema": {},
+                                "example": {
+                                    "status": "ok"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/product/{id}": {
+            "get": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Retorna um produto pelo ID",
+                "operationId": "21951feb04ad123fc1a439dc905d8ec4",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto encontrado"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            },
+            "delete": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Remove um produto (requer autenticação básica)",
+                "operationId": "11759e70b08fb9ac1c03652922923922",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Produto removido"
+                    },
+                    "404": {
+                        "description": "Produto não encontrado"
+                    }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/search": {
+            "get": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Busca produtos com filtros e paginação",
+                "operationId": "5d009c8afbc9195901b3e04e6d802bac",
+                "parameters": [
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "description": "Texto de busca",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "cat",
+                        "in": "query",
+                        "description": "Categoria",
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "page",
+                        "in": "query",
+                        "description": "Página",
+                        "schema": {
+                            "type": "integer",
+                            "default": 1
+                        }
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "description": "Itens por página",
+                        "schema": {
+                            "type": "integer",
+                            "default": 10
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Lista paginada de produtos"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/products": {
+            "post": {
+                "tags": [
+                    "Produtos"
+                ],
+                "summary": "Cria um novo produto (requer autenticação básica)",
+                "operationId": "41f8c9e09799ef29c7b927b01697a0c1",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "price"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Corrente Prata 925"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "Corrente estilo cubana"
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 349.9
+                                    },
+                                    "stock": {
+                                        "type": "integer",
+                                        "example": 10
+                                    },
+                                    "category": {
+                                        "type": "string",
+                                        "example": "correntes"
+                                    },
+                                    "color": {
+                                        "type": "string",
+                                        "example": "Prata"
+                                    },
+                                    "size": {
+                                        "type": "string",
+                                        "example": "60cm"
+                                    },
+                                    "weight": {
+                                        "type": "number",
+                                        "example": 0.045
+                                    },
+                                    "image": {
+                                        "type": "string",
+                                        "example": "https://exemplo.com/img.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Produto criado"
+                    },
+                    "401": {
+                        "description": "Não autorizado"
+                    }
+                },
+                "security": [
+                    {
+                        "basicAuth": []
+                    }
+                ],
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/cart": {
+            "post": {
+                "tags": [
+                    "Carrinho"
+                ],
+                "summary": "Calcula subtotal, frete, desconto e total do carrinho",
+                "operationId": "53a6b1e9e6519b70c3d661d590ce1b2f",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "items"
+                                ],
+                                "properties": {
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "productId": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "qty": {
+                                                    "type": "integer",
+                                                    "example": 2
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    },
+                                    "cupomCode": {
+                                        "type": "string",
+                                        "example": "URI10"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Resumo do carrinho",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "subtotal": {
+                                            "type": "number",
+                                            "example": 699.8
+                                        },
+                                        "freight": {
+                                            "type": "number",
+                                            "example": 0
+                                        },
+                                        "discount": {
+                                            "type": "number",
+                                            "example": 69.98
+                                        },
+                                        "total": {
+                                            "type": "number",
+                                            "example": 629.82
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Autentica um usuário e retorna seus dados",
+                "operationId": "856dc43c039b573198b031704aeb83c5",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "example": "usuario@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Login realizado com sucesso"
+                    },
+                    "401": {
+                        "description": "Credenciais inválidas"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Autenticação"
+                ],
+                "summary": "Cria uma nova conta de usuário",
+                "operationId": "88f9c5afe0411279f1d0c070c719a4c7",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email",
+                                    "password"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "João Silva"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "example": "joao@email.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "senha123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Usuário criado"
+                    },
+                    "422": {
+                        "description": "Dados inválidos ou e-mail já cadastrado"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        },
+        "/api/orders": {
+            "post": {
+                "tags": [
+                    "Pedidos"
+                ],
+                "summary": "Cria um pedido (usuário deve estar autenticado via sessão web)",
+                "operationId": "452c327eacbccf10bf80f93f57b5589c",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "customer_name",
+                                    "customer_email",
+                                    "payment_method",
+                                    "subtotal",
+                                    "freight",
+                                    "discount",
+                                    "total",
+                                    "items"
+                                ],
+                                "properties": {
+                                    "customer_name": {
+                                        "type": "string",
+                                        "example": "João Silva"
+                                    },
+                                    "customer_email": {
+                                        "type": "string",
+                                        "example": "joao@email.com"
+                                    },
+                                    "customer_phone": {
+                                        "type": "string",
+                                        "example": "(11) 99999-9999"
+                                    },
+                                    "address": {
+                                        "type": "string",
+                                        "example": "Rua das Joias, 10, SP"
+                                    },
+                                    "payment_method": {
+                                        "type": "string",
+                                        "enum": [
+                                            "cartao",
+                                            "pix",
+                                            "boleto"
+                                        ]
+                                    },
+                                    "subtotal": {
+                                        "type": "number",
+                                        "example": 349.9
+                                    },
+                                    "freight": {
+                                        "type": "number",
+                                        "example": 0
+                                    },
+                                    "discount": {
+                                        "type": "number",
+                                        "example": 0
+                                    },
+                                    "total": {
+                                        "type": "number",
+                                        "example": 349.9
+                                    },
+                                    "items": {
+                                        "type": "array",
+                                        "items": {
+                                            "properties": {
+                                                "productId": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                },
+                                                "qty": {
+                                                    "type": "integer",
+                                                    "example": 1
+                                                }
+                                            },
+                                            "type": "object"
+                                        }
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Pedido criado com sucesso"
+                    },
+                    "422": {
+                        "description": "Dados inválidos"
+                    }
+                },
+                "servers": [
+                    {
+                        "url": "http://127.0.0.1:8000",
+                        "description": "Servidor local"
+                    }
+                ]
+            }
+        }
+    },
+    "components": {
+        "securitySchemes": {
+            "basicAuth": {
+                "type": "http",
+                "scheme": "basic"
+            }
+        }
+    },
+    "tags": [
+        {
+            "name": "Status",
+            "description": "Saúde da API"
+        },
+        {
+            "name": "Produtos",
+            "description": "Listagem e busca de produtos"
+        },
+        {
+            "name": "Carrinho",
+            "description": "Cálculo do carrinho"
+        },
+        {
+            "name": "Autenticação",
+            "description": "Login e registro"
+        },
+        {
+            "name": "Pedidos",
+            "description": "Criação de pedidos"
+        }
+    ]
+}

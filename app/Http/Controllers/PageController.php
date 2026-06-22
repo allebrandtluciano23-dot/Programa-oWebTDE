@@ -52,6 +52,11 @@ class PageController extends Controller
         return view('cart');
     }
 
+    public function checkout()
+    {
+        return view('checkout');
+    }
+
     public function favorites()
     {
         return view('favorites');
@@ -60,5 +65,10 @@ class PageController extends Controller
     public function login()
     {
         return view('login');
+    }
+
+    public function register()
+    {
+        return view('register');
     }
 }
